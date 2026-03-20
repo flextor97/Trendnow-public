@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="tr-popup-body">
+  <div class="tr-shell">
+    <div class="tr-topbar">
+      <div class="tr-brand-wrap">
+        <img class="tr-logo" src="logo.svg" alt="TrendNow">
+        <div class="tr-brand">TrendNow</div>
+        <div class="tr-live">LIVE</div>
+      </div>
+      <div class="tr-top-icons">
+        <button id="refreshBtn" class="tr-icon-btn" type="button" aria-label="Refresh" title="Refresh now">RF</button>
+        <button id="pulseBtn" class="tr-icon-btn" type="button" aria-label="Pulse">S</button>
+      </div>
+    </div>
+    <div class="tr-summary">
+      <div id="summaryTitle">Top Trends</div>
+      <div class="tr-summary-side">
+        <select id="geoSelect" class="tr-geo-select" aria-label="Country">
+          <option value="IN">India</option>
+          <option value="US">United States</option>
+          <option value="GB">United Kingdom</option>
+          <option value="AU">Australia</option>
+          <option value="BR">Brazil</option>
+          <option value="CA">Canada</option>
+          <option value="DE">Germany</option>
+          <option value="ES">Spain</option>
+          <option value="FR">France</option>
+          <option value="ID">Indonesia</option>
+          <option value="IT">Italy</option>
+          <option value="JP">Japan</option>
+          <option value="KR">South Korea</option>
+          <option value="MX">Mexico</option>
+          <option value="NG">Nigeria</option>
+          <option value="NL">Netherlands</option>
+          <option value="PH">Philippines</option>
+          <option value="PK">Pakistan</option>
+          <option value="SA">Saudi Arabia</option>
+          <option value="SG">Singapore</option>
+          <option value="TR">Turkey</option>
+          <option value="TW">Taiwan</option>
+          <option value="UA">Ukraine</option>
+          <option value="VN">Vietnam</option>
+          <option value="ZA">South Africa</option>
+          <option value="">Worldwide</option>
+        </select>
+        <div id="summaryMeta">India</div>
+      </div>
+    </div>
+    <div class="tr-toolbar">
+      <button id="scanBtn" class="tr-scan-btn" type="button">Scan Now</button>
+      <div class="tr-toolbar-side">
+        <div id="scanStatus" class="tr-scan-status">Ready</div>
+      </div>
+    </div>
+    <div class="tr-search-wrap">
+      <input id="searchInput" class="tr-search-input" type="search" placeholder="Scan a keyword..." autocomplete="off">
+      <button id="searchBtn" class="tr-search-btn" type="button">Search</button>
+    </div>
+    <div id="panel" class="tr-panel"></div>
+    <div class="tr-credit">Made by Flextor</div>
+    <div class="tr-dock">
+      <button class="tr-dock-item tr-dock-item-active" data-tab="trends" type="button"><span>^</span><small>TRENDS</small></button>
+      <button class="tr-dock-item" data-tab="alerts" type="button"><span>o</span><small>ALERTS</small></button>
+      <button class="tr-dock-item" data-tab="signals" type="button"><span>Z</span><small>SIGNALS</small></button>
+      <button class="tr-dock-item" data-tab="track" type="button"><span>[]</span><small>TRACK</small></button>
+      <button class="tr-dock-item" data-tab="notify" type="button"><span>!</span><small>NOTIFY</small></button>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
