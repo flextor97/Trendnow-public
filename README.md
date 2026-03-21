@@ -6,7 +6,7 @@ Spot rising topics before everyone else piles in.
 
 TrendNow is a Chrome extension for Google Trends analysis, trending topic discovery, rising keyword research, and early trend tracking. It helps creators, marketers, researchers, YouTubers, and idea hunters find trending searches, breakout topics, and momentum signals before a niche gets crowded.
 
-![TrendNow Dashboard](Screenshot%202026-03-20%20151117.png)
+![TrendNow Dashboard](dashbaord.png)
 
 ## Why People Download It
 
