@@ -6,6 +6,8 @@ const refreshBtn=document.getElementById('refreshBtn');
 const pulseBtn=document.getElementById('pulseBtn');
 const scanBtn=document.getElementById('scanBtn');
 const scanStatus=document.getElementById('scanStatus');
+const notifyToggle=document.getElementById('notifyToggle');
+const soundToggle=document.getElementById('soundToggle');
 const searchInput=document.getElementById('searchInput');
 const searchBtn=document.getElementById('searchBtn');
 const tabs=[...document.querySelectorAll('[data-tab]')];
@@ -21,6 +23,7 @@ let searchMode=false;
 let searchTerm='';
 let keywordResults=[];
 let keywordSource='trends';
+let settings={desktop:true,sound:true};
 
 const GEO_NAMES={
   IN:'India',US:'United States',GB:'United Kingdom',AU:'Australia',BR:'Brazil',CA:'Canada',DE:'Germany',ES:'Spain',
@@ -56,6 +59,11 @@ const sendMsg=msg=>new Promise(resolve=>{
 
 function currentList(){ return searchMode?keywordResults:items; }
 function isTracked(name){ return tracked.includes(name); }
+function applySettings(){
+  notifyToggle.checked=settings.desktop;
+  soundToggle.checked=settings.sound;
+  soundToggle.disabled=!settings.desktop;
+}
 
 async function toggleTrack(name){
   tracked=isTracked(name)?tracked.filter(x=>x!==name):[name,...tracked].slice(0,100);
@@ -196,9 +204,12 @@ async function load(force){
   geoSelect.value=selectedGeo;
   let res=await sendMsg({type:force?'force-scan':'get-trends',geo:selectedGeo});
   if(!(res?.data||[]).length) res=await sendMsg({type:'force-scan',geo:selectedGeo});
-  items=(res?.data||[]).slice(0,10);
+  items=(res?.data||[]).slice(0,25);
   await syncHistory();
   await syncNotifications();
+  const settingsRes=await sendMsg({type:'get-settings'});
+  settings=settingsRes?.settings||settings;
+  applySettings();
   const stateRes=force&&res?.state?res:await sendMsg({type:'get-monitor-state',geo:selectedGeo});
   state=stateRes?.state||state;
   refreshBtn.disabled=false;
@@ -231,7 +242,7 @@ async function runKeywordSearch(){
   searchBtn.textContent='...';
   scanStatus.textContent=`Scanning "${keyword}"`;
   const res=await sendMsg({type:'search-keyword',keyword,geo:selectedGeo});
-  keywordResults=(res?.data||[]).slice(0,10);
+  keywordResults=(res?.data||[]).slice(0,25);
   keywordSource=keywordResults[0]?.source||'trends';
   searchBtn.disabled=false;
   searchBtn.textContent='Search';
@@ -289,7 +300,7 @@ geoSelect.addEventListener('change',async()=>{
   scanStatus.textContent='Switching region';
   let res=await sendMsg({type:'set-geo',geo:selectedGeo});
   if(!(res?.data||[]).length) res=await sendMsg({type:'force-scan',geo:selectedGeo});
-  items=(res?.data||[]).slice(0,10);
+  items=(res?.data||[]).slice(0,25);
   await syncHistory();
   await syncNotifications();
   state=res?.state||(await sendMsg({type:'get-monitor-state',geo:selectedGeo}))?.state||state;
@@ -310,6 +321,19 @@ searchInput.addEventListener('input',()=>{
     keywordSource='trends';
     render();
   }
+});
+notifyToggle.addEventListener('change',async()=>{
+  settings.desktop=notifyToggle.checked;
+  if(!settings.desktop) settings.sound=false;
+  const res=await sendMsg({type:'set-settings',settings});
+  settings=res?.settings||settings;
+  applySettings();
+});
+soundToggle.addEventListener('change',async()=>{
+  settings.sound=soundToggle.checked&&settings.desktop;
+  const res=await sendMsg({type:'set-settings',settings});
+  settings=res?.settings||settings;
+  applySettings();
 });
 
 load(false);

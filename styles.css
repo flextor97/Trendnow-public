@@ -30,6 +30,10 @@
 .tr-scan-btn{padding:9px 14px;border:1px solid rgba(166,239,255,.22);border-radius:10px;background:linear-gradient(180deg,#b8efff,#8bd9ef);color:#10202a;font:700 11px Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
 .tr-scan-btn:disabled{opacity:.7;cursor:wait}
 .tr-scan-status{color:var(--muted,#8e96a7);font-size:11px}
+.tr-settings-bar{display:flex;gap:8px;margin:0 0 10px}
+.tr-setting-chip{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.03);color:#cfd8e6;font-size:11px}
+.tr-setting-chip input{accent-color:#8bd9ef}
+.tr-setting-chip input:disabled+span{opacity:.45}
 .tr-search-wrap{display:flex;gap:8px;margin:0 0 10px}
 .tr-search-input{flex:1;padding:12px 14px;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:rgba(255,255,255,.96);color:#151821;font:13px Arial,sans-serif;outline:none}
 .tr-search-input::placeholder{color:#8c94a4}

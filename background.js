@@ -3,6 +3,7 @@ const SUGGEST_BASE='https://suggestqueries.google.com/complete/search';
 const ALARM='trendradar-scan';
 const PERIOD_MINUTES=5;
 const OFFSCREEN='offscreen.html';
+const MAX_TRENDS=25;
 
 const getStore=keys=>new Promise(resolve=>chrome.storage.local.get(keys,resolve));
 const setStore=value=>new Promise(resolve=>chrome.storage.local.set(value,resolve));
@@ -20,6 +21,12 @@ function hash(s){
 function geoKey(geo){return geo||'WORLDWIDE';}
 function rssUrl(geo){return geo?`${RSS_BASE}?geo=${encodeURIComponent(geo)}`:RSS_BASE;}
 function trimJsonPrefix(text){return text.replace(/^\)\]\}'\s*/,'');}
+function normalizePrefs(prefs){
+  return {
+    desktop:prefs?.desktop!==false,
+    sound:prefs?.sound!==false
+  };
+}
 
 function parseTraffic(raw){
   return parseInt(String(raw||'').replace(/[^\d]/g,''),10)||0;
@@ -42,7 +49,7 @@ function makeGrowth(name,traffic){
 
 function parseRss(xml){
   const titles=[...xml.matchAll(/<item>[\s\S]*?<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/title>[\s\S]*?<ht:approx_traffic>(.*?)<\/ht:approx_traffic>/g)]
-    .slice(0,10)
+    .slice(0,MAX_TRENDS)
     .map(m=>{
       const name=(m[1]||'').trim();
       const traffic=parseTraffic(m[2]);
@@ -60,7 +67,7 @@ function parseRss(xml){
   return [...xml.matchAll(/<title><!\[CDATA\[(.*?)\]\]><\/title>|<title>(.*?)<\/title>/g)]
     .map(m=>(m[1]||m[2]||'').trim())
     .filter(Boolean)
-    .slice(1,11)
+    .slice(1,MAX_TRENDS+1)
     .map(name=>{
       const growth='+'+(140+(hash(name)%260))+'%';
       return {name,traffic:0,growth,status:num(growth)>=250?'EARLY':'RISING',idea:'YouTube: '+name};
@@ -293,6 +300,9 @@ async function ensureOffscreen(){
 }
 
 async function notifyNewTopics(entries){
+  const store=await getStore(['notificationPrefs']);
+  const prefs=normalizePrefs(store.notificationPrefs);
+  if(prefs.desktop){
   for(const entry of entries.slice(0,3)){
     await createChromeNotification({
       type:'basic',
@@ -301,9 +311,12 @@ async function notifyNewTopics(entries){
       message:`${entry.name} ${entry.growth} in ${entry.geo==='WORLDWIDE'?'Worldwide':entry.geo}`
     });
   }
+  }
   try{
-    await ensureOffscreen();
-    chrome.runtime.sendMessage({type:'play-notify-sound'});
+    if(prefs.sound){
+      await ensureOffscreen();
+      chrome.runtime.sendMessage({type:'play-notify-sound'});
+    }
   }catch(e){}
 }
 
@@ -388,6 +401,15 @@ chrome.runtime.onMessage.addListener((msg,_,send)=>{
       await setStore({notificationsByGeo:all});
       send({ok:1});
     }).catch(()=>send({ok:0}));
+    return true;
+  }
+  if(msg?.type==='get-settings'){
+    getStore(['notificationPrefs']).then(store=>send({ok:1,settings:normalizePrefs(store.notificationPrefs)})).catch(()=>send({ok:0,settings:normalizePrefs()}));
+    return true;
+  }
+  if(msg?.type==='set-settings'){
+    const settings=normalizePrefs(msg.settings);
+    setStore({notificationPrefs:settings}).then(()=>send({ok:1,settings})).catch(()=>send({ok:0,settings:normalizePrefs()}));
     return true;
   }
 });
