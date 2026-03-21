@@ -25,8 +25,8 @@ TrendNow is built for the moment when you want to know:
 
 - Product: `TrendNow`
 - Release model: free extension
-- Source repository: private
-- Public download package: unpacked extension build only
+- Public repository: this repo
+- Install method: load unpacked in Chrome
 
 ## Features
 
@@ -62,15 +62,13 @@ TrendNow is built for the moment when you want to know:
 
 ## Install
 
-1. Open `chrome://extensions/` in Chrome.
-2. Enable `Developer mode`.
-3. Click `Load unpacked`.
-4. Select the extension folder you want to load.
-
-For packaged final folders, use:
-
-- `E:\saas\Finals\TrendNow-Public`
-- `E:\saas\Finals\TrendNow-Admin`
+1. Click `Code` on this GitHub repo.
+2. Click `Download ZIP`.
+3. Extract the ZIP to a folder on your computer.
+4. Open `chrome://extensions/` in Chrome.
+5. Enable `Developer mode`.
+6. Click `Load unpacked`.
+7. Select the extracted TrendNow folder.
 
 ## Use
 
@@ -84,12 +82,6 @@ For packaged final folders, use:
    - `SIGNALS` for proof and scoring
    - `TRACK` for saved trends
    - `NOTIFY` for new-topic notifications
-
-## Fast Pitch
-
-TrendNow helps you move from "What should I make next?" to a shortlist of rising opportunities in seconds.
-
-If you are looking for a Google Trends Chrome extension, a rising keyword finder, a trending topics tracker, or a fast content research dashboard, TrendNow is built for that workflow.
 
 ## Files
 
@@ -109,5 +101,4 @@ If you are looking for a Google Trends Chrome extension, a rising keyword finder
 
 ## Notes
 
-- This repository is kept private for source protection.
 - The downloadable extension package contains runtime files required by Chrome to run the extension.
