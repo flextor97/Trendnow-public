@@ -83,16 +83,6 @@ TrendNow is built for the moment when you want to know:
    - `TRACK` for saved trends
    - `NOTIFY` for new-topic notifications
 
-## Files
-
-- `manifest.json` - extension manifest
-- `background.js` - trend scanning, notifications, and storage
-- `popup.html` - popup layout
-- `popup.js` - popup behavior
-- `content.js` - floating overlay
-- `styles.css` - extension styling
-- `offscreen.html` / `offscreen.js` - notification sound support
-
 ## Legal
 
 - Copyright: `Copyright (c) 2026 Flextor : Aadhaar Rathore`
