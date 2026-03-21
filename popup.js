@@ -204,7 +204,7 @@ async function load(force){
   geoSelect.value=selectedGeo;
   let res=await sendMsg({type:force?'force-scan':'get-trends',geo:selectedGeo});
   if(!(res?.data||[]).length) res=await sendMsg({type:'force-scan',geo:selectedGeo});
-  items=(res?.data||[]).slice(0,25);
+  items=(res?.data||[]).slice(0,12);
   await syncHistory();
   await syncNotifications();
   const settingsRes=await sendMsg({type:'get-settings'});
@@ -242,7 +242,7 @@ async function runKeywordSearch(){
   searchBtn.textContent='...';
   scanStatus.textContent=`Scanning "${keyword}"`;
   const res=await sendMsg({type:'search-keyword',keyword,geo:selectedGeo});
-  keywordResults=(res?.data||[]).slice(0,25);
+  keywordResults=(res?.data||[]).slice(0,12);
   keywordSource=keywordResults[0]?.source||'trends';
   searchBtn.disabled=false;
   searchBtn.textContent='Search';
@@ -300,7 +300,7 @@ geoSelect.addEventListener('change',async()=>{
   scanStatus.textContent='Switching region';
   let res=await sendMsg({type:'set-geo',geo:selectedGeo});
   if(!(res?.data||[]).length) res=await sendMsg({type:'force-scan',geo:selectedGeo});
-  items=(res?.data||[]).slice(0,25);
+  items=(res?.data||[]).slice(0,12);
   await syncHistory();
   await syncNotifications();
   state=res?.state||(await sendMsg({type:'get-monitor-state',geo:selectedGeo}))?.state||state;

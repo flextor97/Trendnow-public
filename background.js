@@ -4,6 +4,7 @@ const ALARM='trendradar-scan';
 const PERIOD_MINUTES=5;
 const OFFSCREEN='offscreen.html';
 const MAX_TRENDS=25;
+const VISIBLE_TRENDS=12;
 
 const getStore=keys=>new Promise(resolve=>chrome.storage.local.get(keys,resolve));
 const setStore=value=>new Promise(resolve=>chrome.storage.local.set(value,resolve));
@@ -261,14 +262,18 @@ async function scanAndStore(force,overrideGeo){
     itemsByName[item.name]={...prev,...item,...proof,geo:key};
     return {...item,...proof,geo:key};
   });
+  const visibleTrends=trends
+    .slice()
+    .sort((a,b)=>(b.lastSeenAt||0)-(a.lastSeenAt||0)||num(b.growth)-num(a.growth))
+    .slice(0,VISIBLE_TRENDS);
   Object.keys(itemsByName).forEach(name=>{
     if(itemsByName[name].lastSeenScan!==scanNumber&&scanNumber-itemsByName[name].lastSeenScan>12) delete itemsByName[name];
   });
   scanStatesByGeo[key]={scanNumber,lastScanAt:timestamp,itemsByName};
-  latestTrendsByGeo[key]=trends;
+  latestTrendsByGeo[key]=visibleTrends;
   latestTrendsTimestampByGeo[key]=timestamp;
   const prevNames=new Set(previousList.map(x=>x.name));
-  const newTopics=scanNumber>1?trends.filter(x=>!prevNames.has(x.name)).slice(0,5):[];
+  const newTopics=scanNumber>1?visibleTrends.filter(x=>!prevNames.has(x.name)).slice(0,5):[];
   if(newTopics.length){
     const log=(notificationsByGeo[key]||[]);
     const entries=newTopics.map(x=>({
@@ -285,7 +290,7 @@ async function scanAndStore(force,overrideGeo){
     await notifyNewTopics(entries);
   }
   await setStore({scanStatesByGeo,latestTrendsByGeo,latestTrendsTimestampByGeo,notificationsByGeo});
-  return trends;
+  return visibleTrends;
 }
 
 async function ensureOffscreen(){
