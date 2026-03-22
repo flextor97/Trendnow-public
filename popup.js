@@ -16,7 +16,7 @@ const proBadge=document.getElementById('proBadge');
 const emailInput=document.getElementById('emailInput');
 const saveEmailBtn=document.getElementById('saveEmailBtn');
 
-const BACKEND_URL = 'https://trendnow-public-1vc0b3utk-flextors-projects.vercel.app'; // Production URL
+const BACKEND_URL = 'https://trendnow-public.vercel.app'; // Production URL
 
 let tab='trends';
 let items=[];
