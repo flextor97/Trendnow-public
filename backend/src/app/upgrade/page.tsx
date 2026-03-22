@@ -1,4 +1,4 @@
-import { Check, Flame, Zap, Shield, Globe, Award } from 'lucide-react';
+import { Check, Zap } from 'lucide-react';
 
 export default function UpgradePage() {
   return (

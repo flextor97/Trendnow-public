@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export async function POST(req: Request) {
+export async function POST() {
   try {
     const LS_API_KEY = process.env.LEMON_SQUEEZY_API_KEY;
     const STORE_ID = process.env.LEMON_SQUEEZY_STORE_ID;
@@ -50,8 +50,8 @@ export async function POST(req: Request) {
 
     const checkoutUrl = data.data.attributes.url;
     return NextResponse.redirect(checkoutUrl, { status: 303 });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Checkout error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }
 }

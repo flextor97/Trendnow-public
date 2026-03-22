@@ -1,7 +1,6 @@
 'use client';
 
 import { CheckCircle2, Laptop } from 'lucide-react';
-import Link from 'next/link';
 
 export default function SuccessPage() {
   return (
@@ -26,7 +25,7 @@ export default function SuccessPage() {
           </li>
           <li className="flex gap-3">
             <span className="w-6 h-6 rounded-full bg-white/5 flex-shrink-0 flex items-center justify-center text-xs font-bold">2</span>
-            <span>If you see the **PRO** badge, you're all set.</span>
+            <span>If you see the **PRO** badge, you&apos;re all set.</span>
           </li>
           <li className="flex gap-3">
             <span className="w-6 h-6 rounded-full bg-white/5 flex-shrink-0 flex items-center justify-center text-xs font-bold">3</span>
