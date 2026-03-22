@@ -1,3 +1,5 @@
+'use client';
+
 import { CheckCircle2, Laptop } from 'lucide-react';
 import Link from 'next/link';
 
