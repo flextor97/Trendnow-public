@@ -11,13 +11,19 @@ const soundToggle=document.getElementById('soundToggle');
 const searchInput=document.getElementById('searchInput');
 const searchBtn=document.getElementById('searchBtn');
 const tabs=[...document.querySelectorAll('[data-tab]')];
+const upgradeBtn=document.getElementById('upgradeBtn');
+const proBadge=document.getElementById('proBadge');
+const emailInput=document.getElementById('emailInput');
+const saveEmailBtn=document.getElementById('saveEmailBtn');
+
+const BACKEND_URL = 'https://trendnow-public-1vc0b3utk-flextors-projects.vercel.app'; // Production URL
 
 let tab='trends';
 let items=[];
 let tracked=[];
 let historyByName={};
 let notifications=[];
-let state={scanNumber:0,lastScanAt:0,boomCount:0,hottest:null,trackedCount:0,unreadCount:0};
+let state={scanNumber:0,lastScanAt:0,boomCount:0,hottest:null,trackedCount:0,unreadCount:0,isPro:false};
 let selectedGeo='IN';
 let searchMode=false;
 let searchTerm='';
@@ -66,7 +72,13 @@ function applySettings(){
 }
 
 async function toggleTrack(name){
-  tracked=isTracked(name)?tracked.filter(x=>x!==name):[name,...tracked].slice(0,100);
+  const limit = state.isPro ? 100 : 5;
+  if(!state.isPro && !isTracked(name) && tracked.length >= limit){
+    alert("Free limit reached (5 items). Upgrade to Pro for unlimited tracking.");
+    window.open(`${BACKEND_URL}/upgrade`);
+    return;
+  }
+  tracked=isTracked(name)?tracked.filter(x=>x!==name):[name,...tracked].slice(0,limit);
   await setStore({tracked});
   render();
 }
@@ -113,10 +125,38 @@ function renderAlerts(){
   const alerts=currentList().filter(x=>x.boomSoon||x.status==='EARLY'||num(x.growth)>=300);
   summaryTitle.textContent='Alerts';
   summaryMeta.textContent=searchMode?`${geoName(selectedGeo)} | ${alerts.length} keyword triggers`:`${geoName(selectedGeo)} | ${alerts.length} active triggers`;
-  panel.innerHTML=monitorStrip()+(alerts.length?alerts.map(card).join(''):'<div class="tr-empty">No active alerts</div>');
+  
+  if(!state.isPro && alerts.length > 3) {
+    const freeAlerts = alerts.slice(0, 3);
+    panel.innerHTML = monitorStrip() + freeAlerts.map(card).join('') + `
+      <div class="tr-locked-feature">
+        <div class="tr-locked-overlay">
+          <div class="tr-locked-title">Lock Early Signals</div>
+          <div class="tr-locked-reason">Unlock unlimited alerts and real-time breakout detection with Pro.</div>
+          <button class="tr-upgrade-now" onclick="window.open('${BACKEND_URL}/upgrade')">Upgrade for $9.99</button>
+        </div>
+      </div>
+    `;
+  } else {
+    panel.innerHTML=monitorStrip()+(alerts.length?alerts.map(card).join(''):'<div class="tr-empty">No active alerts</div>');
+  }
 }
 
 function renderSignals(){
+  if(!state.isPro) {
+    summaryTitle.textContent='Signals';
+    summaryMeta.textContent='Advanced Proof';
+    panel.innerHTML=`
+      <div class="tr-locked-feature" style="min-height: 300px;">
+        <div class="tr-locked-overlay">
+          <div class="tr-locked-title">Advanced Momentum Proof</div>
+          <div class="tr-locked-reason">Get the exact growth proof, score history, and viral probability for every trend.</div>
+          <button class="tr-upgrade-now" onclick="window.open('${BACKEND_URL}/upgrade')">Unlock Signals</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
   const top=[...currentList()].sort((a,b)=>(b.score||0)-(a.score||0));
   const hottest=top[0];
   summaryTitle.textContent='Signals';
@@ -175,6 +215,8 @@ function renderNotify(){
 
 function render(){
   tabs.forEach(x=>x.classList.toggle('tr-dock-item-active',x.dataset.tab===tab));
+  upgradeBtn.style.display=state.isPro?'none':'block';
+  proBadge.style.display=state.isPro?'block':'none';
   if(tab==='trends') renderTrends();
   if(tab==='alerts') renderAlerts();
   if(tab==='signals') renderSignals();
@@ -192,15 +234,30 @@ async function syncNotifications(){
   notifications=(res?.data||[]).slice(0,50);
 }
 
+async function checkProStatus(){
+  try{
+    const store = await getStore(['proEmail']);
+    if(!store.proEmail) return false;
+    
+    // Call backend to verify
+    const res = await fetch(`${BACKEND_URL}/api/verify?token=${encodeURIComponent(store.proEmail)}`);
+    const data = await res.json();
+    return data.isPro;
+  }catch(e){
+    return false;
+  }
+}
+
 async function load(force){
   refreshBtn.disabled=true;
   scanBtn.disabled=true;
   refreshBtn.textContent='...';
   scanBtn.textContent='Scanning';
   scanStatus.textContent=force?'Live scan running':'Loading';
-  const store=await getStore(['tracked','selectedGeo']);
+  const store=await getStore(['tracked','selectedGeo', 'proEmail']);
   tracked=Array.isArray(store.tracked)?store.tracked:[];
   selectedGeo=typeof store.selectedGeo==='string'?store.selectedGeo:'IN';
+  if(store.proEmail) emailInput.value = store.proEmail;
   geoSelect.value=selectedGeo;
   let res=await sendMsg({type:force?'force-scan':'get-trends',geo:selectedGeo});
   if(!(res?.data||[]).length) res=await sendMsg({type:'force-scan',geo:selectedGeo});
@@ -212,6 +269,7 @@ async function load(force){
   applySettings();
   const stateRes=force&&res?.state?res:await sendMsg({type:'get-monitor-state',geo:selectedGeo});
   state=stateRes?.state||state;
+  state.isPro = await checkProStatus();
   refreshBtn.disabled=false;
   scanBtn.disabled=false;
   refreshBtn.textContent='RF';
@@ -290,6 +348,15 @@ scanBtn.addEventListener('click',()=>load(true));
 searchBtn.addEventListener('click',runKeywordSearch);
 searchInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); runKeywordSearch(); } });
 pulseBtn.addEventListener('click',()=>{ tab='signals'; render(); });
+upgradeBtn.addEventListener('click',()=>window.open(`${BACKEND_URL}/upgrade`));
+
+saveEmailBtn.addEventListener('click', async () => {
+  const email = emailInput.value.trim();
+  saveEmailBtn.textContent = '...';
+  await setStore({proEmail: email});
+  await load(true);
+  saveEmailBtn.textContent = 'Save';
+});
 
 geoSelect.addEventListener('change',async()=>{
   selectedGeo=geoSelect.value;
@@ -298,6 +365,25 @@ geoSelect.addEventListener('change',async()=>{
   refreshBtn.textContent='...';
   scanBtn.textContent='Scanning';
   scanStatus.textContent='Switching region';
+  
+  if(!state.isPro && selectedGeo !== 'IN' && selectedGeo !== '') {
+    scanStatus.textContent='Pro Feature: Multi-region';
+    panel.innerHTML=`
+      <div class="tr-locked-feature" style="min-height: 300px;">
+        <div class="tr-locked-overlay">
+          <div class="tr-locked-title">International Trends</div>
+          <div class="tr-locked-reason">Free version is limited to India. Unlock 20+ countries and Worldwide tracking with Pro.</div>
+          <button class="tr-upgrade-now" onclick="window.open('${BACKEND_URL}/upgrade')">Unlock High Yield Geos</button>
+        </div>
+      </div>
+    `;
+    refreshBtn.disabled=false;
+    scanBtn.disabled=false;
+    refreshBtn.textContent='RF';
+    scanBtn.textContent='Scan Now';
+    return;
+  }
+
   let res=await sendMsg({type:'set-geo',geo:selectedGeo});
   if(!(res?.data||[]).length) res=await sendMsg({type:'force-scan',geo:selectedGeo});
   items=(res?.data||[]).slice(0,12);
