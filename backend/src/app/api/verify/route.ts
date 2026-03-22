@@ -22,7 +22,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ isPro: false });
     }
 
-    return NextResponse.json({ isPro: data.isPro });
+    return NextResponse.json({ isPro: data.is_pro });
   } catch (err) {
     return NextResponse.json({ isPro: false });
   }
