@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "TrendNow",
-  "description": "Chrome extension for Google Trends scanning, rising keyword discovery, alerts, notifications, and geo-based trend tracking.",
-  "version": "1.0",
+  "description": "Find rising Google Trends topics, breakout keywords, and get early alerts. Smart trend tracker & discovery tool for creators and marketers.",
+  "version": "1.1.0",
   "minimum_chrome_version": "114",
   "icons": {
     "16": "icon16.png",
@@ -15,7 +15,9 @@
   "content_security_policy": {
     "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; connect-src 'self' https://trends.google.com https://suggestqueries.google.com https://*.supabase.co https://trendnow-public.vercel.app;"
   },
-  "background": { "service_worker": "background.js" },
+  "background": { 
+    "service_worker": "background.js" 
+  },
   "content_scripts": [{
     "matches": ["*://*.youtube.com/*", "*://trends.google.com/*"],
     "js": ["content.js"],
