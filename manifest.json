@@ -1,34 +1,37 @@
 {
   "manifest_version": 3,
-  "name": "TrendNow",
-  "description": "Find rising Google Trends topics, breakout keywords, and get early alerts. Smart trend tracker & discovery tool for creators and marketers.",
-  "version": "1.1.0",
-  "minimum_chrome_version": "114",
+  "name": "TrendNow - Trend Tracker",
+  "version": "1.2.0",
+  "description": "Spot rising trends and keywords before they explode. Real-time Google Trends scanner with alerts.",
   "icons": {
-    "16": "icon16.png",
-    "32": "icon32.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "icon-16.png",
+    "32": "icon-32.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
   },
-  "permissions": ["storage", "alarms", "notifications", "offscreen"],
-  "host_permissions": ["https://trends.google.com/*", "https://suggestqueries.google.com/*"],
-  "content_security_policy": {
-    "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; connect-src 'self' https://trends.google.com https://suggestqueries.google.com https://*.supabase.co https://trendnow-public.vercel.app;"
-  },
-  "background": { 
-    "service_worker": "background.js" 
-  },
-  "content_scripts": [{
-    "matches": ["*://*.youtube.com/*", "*://trends.google.com/*"],
-    "js": ["content.js"],
-    "css": ["styles.css"]
-  }],
   "action": {
     "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icon16.png",
-      "32": "icon32.png",
-      "48": "icon48.png"
+    "default_title": "TrendNow"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.google.com/*", "*://trends.google.com/*"],
+      "js": ["content.js"]
     }
+  ],
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications"
+  ],
+  "host_permissions": [
+    "*://*.google.com/*",
+    "*://suggestqueries.google.com/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
   }
 }

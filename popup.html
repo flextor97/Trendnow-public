@@ -1,93 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrendNow</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="tr-popup-body">
-  <div class="tr-shell">
-    <div class="tr-topbar">
-      <div class="tr-brand-wrap">
-        <img class="tr-logo" src="logo.svg" alt="TrendNow">
-        <div class="tr-brand">TrendNow</div>
-        <div class="tr-live">LIVE</div>
+<body>
+  <div class="popup">
+    <div class="header">
+      <div class="logo">
+        <span class="logo-icon">📈</span>
+        <h1>TrendNow</h1>
       </div>
-      <div class="tr-top-icons">
-        <button id="upgradeBtn" class="tr-pro-btn" type="button" style="display: none;">Upgrade</button>
-        <div id="proBadge" class="tr-pro-badge" style="display: none;">PRO</div>
-        <button id="refreshBtn" class="tr-icon-btn" type="button" aria-label="Refresh" title="Refresh now">RF</button>
-        <button id="pulseBtn" class="tr-icon-btn" type="button" aria-label="Pulse">S</button>
-      </div>
+      <div class="status live">LIVE</div>
     </div>
-    <div class="tr-summary">
-      <div id="summaryTitle">Top Trends</div>
-      <div class="tr-summary-side">
-        <select id="geoSelect" class="tr-geo-select" aria-label="Country">
-          <option value="IN">India</option>
-          <option value="US">United States</option>
-          <option value="GB">United Kingdom</option>
-          <option value="AU">Australia</option>
-          <option value="BR">Brazil</option>
-          <option value="CA">Canada</option>
-          <option value="DE">Germany</option>
-          <option value="ES">Spain</option>
-          <option value="FR">France</option>
-          <option value="ID">Indonesia</option>
-          <option value="IT">Italy</option>
-          <option value="JP">Japan</option>
-          <option value="KR">South Korea</option>
-          <option value="MX">Mexico</option>
-          <option value="NG">Nigeria</option>
-          <option value="NL">Netherlands</option>
-          <option value="PH">Philippines</option>
-          <option value="PK">Pakistan</option>
-          <option value="SA">Saudi Arabia</option>
-          <option value="SG">Singapore</option>
-          <option value="TR">Turkey</option>
-          <option value="TW">Taiwan</option>
-          <option value="UA">Ukraine</option>
-          <option value="VN">Vietnam</option>
-          <option value="ZA">South Africa</option>
-          <option value="">Worldwide</option>
-        </select>
-        <div id="summaryMeta">India</div>
-      </div>
+
+    <div class="controls">
+      <select id="geoSelect" class="geo-select">
+        <option value="">Worldwide</option>
+        <option value="IN" selected>India</option>
+        <!-- more options -->
+      </select>
+      <button id="scanBtn" class="scan-btn">SCAN NOW</button>
     </div>
-    <div class="tr-toolbar">
-      <button id="scanBtn" class="tr-scan-btn" type="button">Scan Now</button>
-      <div class="tr-toolbar-side">
-        <div id="scanStatus" class="tr-scan-status">Ready</div>
-      </div>
+
+    <div id="results" class="results-panel">
+      <!-- populated by JS -->
     </div>
-    <div class="tr-settings-bar">
-      <label class="tr-setting-chip">
-        <input id="notifyToggle" type="checkbox">
-        <span>Notifications</span>
-      </label>
-      <label class="tr-setting-chip">
-        <input id="soundToggle" type="checkbox">
-        <span>Sound</span>
-      </label>
-    </div>
-    <div class="tr-search-wrap">
-      <input id="searchInput" class="tr-search-input" type="search" placeholder="Scan a keyword..." autocomplete="off">
-      <button id="searchBtn" class="tr-search-btn" type="button">Search</button>
-    </div>
-    <div id="panel" class="tr-panel"></div>
-    <div class="tr-login-wrap" style="padding: 10px; border-top: 1px solid var(--tr-border); margin-top: 10px; display: flex;">
-      <input id="emailInput" class="tr-search-input" style="padding: 6px; font-size: 11px; flex: 1;" type="email" placeholder="Enter Pro Email...">
-      <button id="saveEmailBtn" class="tr-search-btn" style="padding: 6px 10px; margin-left: 5px;">Save</button>
-    </div>
-    <div class="tr-credit">Made by Flextor</div>
-    <div class="tr-dock">
-      <button class="tr-dock-item tr-dock-item-active" data-tab="trends" type="button"><span>^</span><small>TRENDS</small></button>
-      <button class="tr-dock-item" data-tab="alerts" type="button"><span>o</span><small>ALERTS</small></button>
-      <button class="tr-dock-item" data-tab="signals" type="button"><span>Z</span><small>SIGNALS</small></button>
-      <button class="tr-dock-item" data-tab="track" type="button"><span>[]</span><small>TRACK</small></button>
-      <button class="tr-dock-item" data-tab="notify" type="button"><span>!</span><small>NOTIFY</small></button>
+
+    <div class="footer">
+      Made with ❤️ by Flextor
     </div>
   </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
