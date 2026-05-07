@@ -1,6 +1,32 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import Razorpay from 'razorpay';
 
-export async function POST() {
-  // Redirect directly to your Gumroad product
-  return NextResponse.redirect('https://998525715789.gumroad.com/l/alkla', { status: 303 });
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_KEY_SECRET!,
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const { amount = 79900, currency = 'INR' } = await req.json(); // 799 INR = 79900 paise
+
+    const options = {
+      amount: amount,
+      currency: currency,
+      receipt: 'receipt_' + Date.now(),
+      payment_capture: 1,
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    return NextResponse.json({
+      success: true,
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+    });
+  } catch (error: any) {
+    console.error('Razorpay order creation error:', error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
 }
