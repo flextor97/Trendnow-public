@@ -40,7 +40,7 @@ export default function UpgradePage() {
                 <p className="text-[#8e96a7]">Lifetime Access + Updates</p>
               </div>
               <div className="text-right">
-                <div className="text-4xl font-black">$9.99</div>
+                <div className="text-4xl font-black">$19</div>
                 <div className="text-[#8e96a7] text-sm italic">One-time payment</div>
               </div>
             </div>
@@ -61,12 +61,12 @@ export default function UpgradePage() {
                 type="submit"
                 className="w-full py-5 rounded-2xl bg-gradient-to-r from-[#ff935c] to-[#ff5858] text-white font-black text-xl hover:scale-[1.02] transition-transform active:scale-[0.98] shadow-lg shadow-[#ff935c]/20"
               >
-                Unlock Pro Instantly
+                Unlock Pro Instantly - $19
               </button>
             </form>
             
             <p className="mt-6 text-center text-sm text-[#8e96a7]">
-              Safe and secure checkout via Stripe. Global payments supported including India.
+              Safe and secure checkout via Razorpay. Supports UPI, Cards, Wallets & more.
             </p>
           </div>
         </div>
