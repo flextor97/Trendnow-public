@@ -1,13 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "TrendNow - Trend Tracker",
-  "version": "1.2.0",
-  "description": "Spot rising trends and keywords before they explode. Real-time Google Trends scanner with alerts.",
+  "name": "TrendNow - Rising Trends",
+  "version": "2.0.0",
+  "description": "Real-time Google Trends scanner. Spot rising topics, keywords & viral signals before they explode.",
   "icons": {
-    "16": "icon-16.png",
-    "32": "icon-32.png",
-    "48": "icon-48.png",
-    "128": "icon-128.png"
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   },
   "action": {
     "default_popup": "popup.html",
@@ -18,7 +17,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.google.com/*", "*://trends.google.com/*"],
+      "matches": ["*://trends.google.com/*", "*://www.youtube.com/*"],
       "js": ["content.js"]
     }
   ],
@@ -28,10 +27,10 @@
     "notifications"
   ],
   "host_permissions": [
-    "*://*.google.com/*",
-    "*://suggestqueries.google.com/*"
+    "*://suggestqueries.google.com/*",
+    "*://trends.google.com/*"
   ],
   "content_security_policy": {
-    "extension_pages": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    "extension_pages": "default-src 'self'; script-src 'self' https://checkout.razorpay.com 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
   }
 }
